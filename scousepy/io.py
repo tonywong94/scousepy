@@ -198,6 +198,18 @@ def generate_config_file(filename, datadirectory, outputdir, configdir, config_f
         ]
 
     stage_2 = [
+        ('snr', {
+            'default': '3',
+            'description': "minimum signal-to-noise ratio for each peak",
+            'simple': True}),
+        ('alpha', {
+            'default': '5',
+            'description': "width of Gaussian smoothing kernel in channels",
+            'simple': True}),
+        ('no_negative', {
+            'default': 'True',
+            'description': "do not allow negative Gaussian components",
+            'simple': False}),
         ('write_ascii', {
             'default': 'True',
             'description': "outputs an ascii table of the fits [True/False]",

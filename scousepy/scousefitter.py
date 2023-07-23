@@ -27,6 +27,7 @@ class ScouseFitter(object):
                        x=None,y=None,rms=None,
                        SNR=3,minSNR=1,maxSNR=30,
                        alpha=5,minalpha=0.1,maxalpha=30,
+                       no_negative=True,
                        outputfile=None,
                        xarrkwargs={},unit='',refit=False):
 
@@ -121,6 +122,7 @@ class ScouseFitter(object):
         self.alpha=alpha
         self.minalpha=minalpha
         self.maxalpha=maxalpha
+        self.no_negative=no_negative
         self.outputfile=outputfile
         self.models={}
 
@@ -364,10 +366,10 @@ class ScouseFitter(object):
         # sliders
         #=======#
         self.slider_snr_ax=self.fig.add_axes([0.0875, 0.91, 0.3, 0.02])
-        self.slider_snr=make_slider(self.slider_snr_ax,"SNR",self.minSNR,self.maxSNR,self.update_SNR,valinit=self.SNR, valfmt="%i")
+        self.slider_snr=make_slider(self.slider_snr_ax,"SNR",self.minSNR,self.maxSNR,self.update_SNR,valinit=self.SNR, valfmt="%.2f")
 
         self.slider_alpha_ax=self.fig.add_axes([0.4875, 0.91, 0.3, 0.02])
-        self.slider_alpha=make_slider(self.slider_alpha_ax,"alpha",self.minalpha,self.maxalpha,self.update_alpha,valinit=self.alpha, valfmt="%i")#, valfmt="%.2f")
+        self.slider_alpha=make_slider(self.slider_alpha_ax,"alpha",self.minalpha,self.maxalpha,self.update_alpha,valinit=self.alpha, valfmt="%.2f")#, valfmt="%.2f")
 
     def show(self):
         """
@@ -385,6 +387,8 @@ class ScouseFitter(object):
         Decomposer.create_a_spectrum(self.decomposer,unit=self.unit,xarrkwargs=self.xarrkwargs)
         # generate pyspeckit spectrum
         self.spectrum=self.decomposer.pskspectrum
+        # Pass the no_negative parameter to SpectralDecomposer
+        self.decomposer.no_negative=self.no_negative
 
     def open_scousefitter_manual(self, event):
         """

@@ -160,10 +160,10 @@ class ScouseFitChecker(object):
         self.slider_vmax=make_slider(self.slider_vmax_ax,"vmax",self.vmin,self.vmax,self.update_vmax,valinit=self.vmax,valfmt="%1.2f", facecolor='0.75')
 
         self.slider_snr_ax=self.fig.add_axes([0.675, 0.84, 0.275, 0.015])
-        self.slider_snr=make_slider(self.slider_snr_ax,"SNR",self.minSNR,self.maxSNR,self.update_SNR,valinit=self.SNR, valfmt="%i", facecolor='0.75')
+        self.slider_snr=make_slider(self.slider_snr_ax,"SNR",self.minSNR,self.maxSNR,self.update_SNR,valinit=self.SNR, valfmt="%.2f", facecolor='0.75')
 
         self.slider_alpha_ax=self.fig.add_axes([0.675, 0.8125, 0.275, 0.015])
-        self.slider_alpha=make_slider(self.slider_alpha_ax,"alpha",self.minalpha,self.maxalpha,self.update_alpha,valinit=self.alpha, valfmt="%i", facecolor='0.75')
+        self.slider_alpha=make_slider(self.slider_alpha_ax,"alpha",self.minalpha,self.maxalpha,self.update_alpha,valinit=self.alpha, valfmt="%.2f", facecolor='0.75')
 
         #========================#
         # compute diagnostics menu

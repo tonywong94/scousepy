@@ -248,6 +248,9 @@ class scouse(object):
         self.chunk=False
 
         # stage 2 -- user
+        self.alpha=None
+        self.snr=None
+        self.no_negative=None
         self.write_ascii=None
         # stage 2 -- scousepy
         self.fitcount=None
@@ -601,6 +604,12 @@ class scouse(object):
             # if it hasn't
             self.fitcount=np.zeros(int(np.sum(self.totalsaas)), dtype='bool')
 
+        # Default values for SNR and alpha
+        if self.snr is None:
+            self.snr=3
+        if self.alpha is None:
+            self.alpha=5
+
         starttime = time.time()
 
         fitterobject=ScouseFitter(self.modelstore, method='scouse',
@@ -609,6 +618,9 @@ class scouse(object):
                                 fit_dict=self.saa_dict,
                                 parent=saa_list[:,1],
                                 fitcount=self.fitcount,
+                                SNR=self.snr,
+                                alpha=self.alpha,
+                                no_negative=self.no_negative,
                                 refit=refit)
         fitterobject.show()
 
