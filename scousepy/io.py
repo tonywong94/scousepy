@@ -570,8 +570,8 @@ def genmodel(inputs):
     bfmodel = spectrum.model
     if bfmodel.ncomps>0:
         from .SpectralDecomposer import Decomposer
-        # Commented out by TW on 27-jul-23 because ppv_vol is not defined
-        #from .scousefitter import recreate_model
+        # Commented out by TW on 27-jul-23 because stage_5 is not defined
+        #from .stage_5 import recreate_model
         #mod,res = recreate_model(self, spectrum, bfmodel)
         decomposer=Decomposer(self.x, spectrum.spectrum, spectrum.rms)
         Decomposer.create_a_spectrum(decomposer)
