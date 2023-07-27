@@ -76,7 +76,7 @@ class Decomposer(object):
         self.guesses=None
         self.limits=None
         self.limited=None
-        self.no_negative=True
+        self.no_negative=False
         self.happy=False
         self.conditions=None
 
