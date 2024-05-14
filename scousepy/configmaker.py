@@ -77,6 +77,9 @@ class ConfigMaker(object):
         self.njobs=3
         self.verbose=True
         self.autosave=True
+        self.snr=3
+        self.alpha=5
+        self.no_negative=True
         self.write_moments=True
         self.save_fig=True
         self.write_ascii=True
@@ -100,6 +103,12 @@ class ConfigMaker(object):
         self.write_moments_simple=False
         self.save_fig_description="generate a figure of the coverage map [True/False]"
         self.save_fig_simple=False
+        self.snr_description="minimum signal-to-noise ratio for each peak"
+        self.snr_simple=True
+        self.alpha_description="width of Gaussian smoothing kernel in channels"
+        self.alpha_simple=True
+        self.no_negative_description="do not allow negative Gaussian components"
+        self.no_negative_simple=False
         self.write_ascii_description="outputs an ascii table of the fits [True/False]"
         self.write_ascii_simple=False
         self.tol_description="Tolerance values for the fitting. See Henshaw et al. 2016a"
@@ -218,6 +227,18 @@ class ConfigMaker(object):
                 ]
 
             stage_2 = [
+                ('snr', {
+                    'default': self.snr,
+                    'description': self.snr_description,
+                    'simple': self.snr_simple}),
+                ('alpha', {
+                    'default': self.alpha,
+                    'description': self.alpha_description,
+                    'simple': self.alpha_simple}),
+                ('no_negative', {
+                    'default': self.no_negative,
+                    'description': self.no_negative_description,
+                    'simple': self.no_negative_simple}),
                 ('write_ascii', {
                     'default': self.write_ascii,
                     'description': self.write_ascii_description,

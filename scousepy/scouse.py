@@ -248,6 +248,9 @@ class scouse(object):
         self.chunk=False
 
         # stage 2 -- user
+        self.alpha=None
+        self.snr=None
+        self.no_negative=None
         self.write_ascii=None
         # stage 2 -- scousepy
         self.fitcount=None
@@ -506,7 +509,7 @@ class scouse(object):
         return saa_dict_chunks
 
     def stage_2(config='', refit=False, verbose=None, s1file=None, s2file=None,
-                interactive=True, SNR=3, alpha=5):
+                interactive=True):
         """
         Fitting of the SAAs
 
@@ -602,6 +605,12 @@ class scouse(object):
             # if it hasn't
             self.fitcount=np.zeros(int(np.sum(self.totalsaas)), dtype='bool')
 
+        # Default values for SNR and alpha
+        if self.snr is None:
+            self.snr=3
+        if self.alpha is None:
+            self.alpha=5
+
         starttime = time.time()
 
         fitterobject=ScouseFitter(self.modelstore, method='scouse',
@@ -612,7 +621,8 @@ class scouse(object):
                                 fitcount=self.fitcount,
                                 refit=refit,
                                 interactive=interactive,
-                                SNR=SNR, alpha=alpha, verbose=self.verbose)
+                                SNR=self.snr, alpha=self.alpha, 
+                                no_negative=self.no_negative, verbose=self.verbose)
         if interactive:
             fitterobject.show()
 

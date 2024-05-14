@@ -74,6 +74,10 @@ class Decomposer(object):
         self.fit_updated=False
         self.residuals_shown=False
         self.guesses=None
+        # Next 3 added by TW
+        self.limits=None
+        self.limited=None
+        self.no_negative=False
         self.happy=False
         self.conditions=None
 
@@ -402,14 +406,32 @@ class Decomposer(object):
             warnings.simplefilter('ignore')
             old_log = log.level
             log.setLevel('ERROR')
-            self.pskspectrum.specfit(interactive=False,
-                                clear_all_connections=True,
-                                xmin=np.min(self.spectral_axis),
-                                xmax=np.max(self.spectral_axis),
-                                fittype = self.fittype,
-                                guesses = self.guesses,
-                                verbose=False,
-                                use_lmfit=True)
+            # New code by TW to avoid negative Gaussian components in fit
+            if self.fittype == 'gaussian' and self.no_negative == True:
+                limits = [(0,0) for i in range(len(self.guesses))]
+                limited = [(True,False) for i in range(len(self.guesses))]
+                for j in range(len(limited)):
+                    if j % 3 == 1:
+                        limited[j] = (False,False)
+                self.pskspectrum.specfit(interactive=False,
+                                    clear_all_connections=True,
+                                    xmin=np.min(self.spectral_axis),
+                                    xmax=np.max(self.spectral_axis),
+                                    fittype = self.fittype,
+                                    guesses = self.guesses,
+                                    limits = limits,
+                                    limited = limited,
+                                    verbose=False,
+                                    use_lmfit=True)
+            else:
+                self.pskspectrum.specfit(interactive=False,
+                                    clear_all_connections=True,
+                                    xmin=np.min(self.spectral_axis),
+                                    xmax=np.max(self.spectral_axis),
+                                    fittype = self.fittype,
+                                    guesses = self.guesses,
+                                    verbose=False,
+                                    use_lmfit=True)
             log.setLevel(old_log)
 
     def fit_a_spectrum_interactively(self):

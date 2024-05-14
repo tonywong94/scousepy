@@ -198,6 +198,18 @@ def generate_config_file(filename, datadirectory, outputdir, configdir, config_f
         ]
 
     stage_2 = [
+        ('snr', {
+            'default': '3',
+            'description': "minimum signal-to-noise ratio for each peak",
+            'simple': True}),
+        ('alpha', {
+            'default': '5',
+            'description': "width of Gaussian smoothing kernel in channels",
+            'simple': True}),
+        ('no_negative', {
+            'default': 'True',
+            'description': "do not allow negative Gaussian components",
+            'simple': False}),
         ('write_ascii', {
             'default': 'True',
             'description': "outputs an ascii table of the fits [True/False]",
@@ -507,11 +519,12 @@ def create_modelcube(self, njobs=1, verbose=True):
     starttime = time.time()
 
     cube = self.cube
-    x = np.array(cube.world[:,0,0][0])
-    if (self.ppv_vol[0] is not None) & (self.ppv_vol[1] is not None):
-        trimids = np.where((x>self.ppv_vol[0])&(x<self.ppv_vol[1]))[0]
-
-    _cube = cube[min(trimids):max(trimids)+1, :, :]
+# Commented out by TW on 27-jul-23 because ppv_vol is not defined
+#     x = np.array(cube.world[:,0,0][0])
+#     if (self.ppv_vol[0] is not None) & (self.ppv_vol[1] is not None):
+#         trimids = np.where((x>self.ppv_vol[0])&(x<self.ppv_vol[1]))[0]
+# 
+#     _cube = cube[min(trimids):max(trimids)+1, :, :]
     _modelcube = np.full_like(_cube, np.nan)
 
     if verbose:
@@ -535,8 +548,8 @@ def create_modelcube(self, njobs=1, verbose=True):
         progress_bar = ProgressBar(self.indiv_dict.keys())
 
     for i, key in enumerate(self.indiv_dict.keys()):
-        _modelcube[:, self.indiv_dict[key].coordinates[0],
-                      self.indiv_dict[key].coordinates[1]] = mergedmods[i]
+        _modelcube[:, self.indiv_dict[key].coordinates[1],
+                      self.indiv_dict[key].coordinates[0]] = mergedmods[i]
         if verbose:
             progress_bar.update()
 
@@ -556,11 +569,23 @@ def genmodel(inputs):
     spectrum = self.indiv_dict[key]
     bfmodel = spectrum.model
     if bfmodel.ncomps>0:
-        from .stage_5 import recreate_model
-        mod,res = recreate_model(self, spectrum, bfmodel)
+# Commented out by TW on 27-jul-23 because stage_5 is not defined
+#         from .stage_5 import recreate_model
+#         mod,res = recreate_model(self, spectrum, bfmodel)
+        from .SpectralDecomposer import Decomposer
+        decomposer=Decomposer(self.x, spectrum.spectrum, spectrum.rms)
+        Decomposer.create_a_spectrum(decomposer)
+        pskspectrum=decomposer.pskspectrum
+        pskspectrum.specfit.fittype = bfmodel.fittype
+        pskspectrum.specfit.fitter = pskspectrum.specfit.Registry.multifitters[bfmodel.fittype]
+        mod = np.zeros([len(self.x), int(bfmodel.ncomps)])
+        for k in range(int(bfmodel.ncomps)):
+            modparams = bfmodel.params[(k*len(bfmodel.parnames)):(k*len(bfmodel.parnames))+len(bfmodel.parnames)]
+            mod[:,k] = pskspectrum.specfit.get_model_frompars(self.x, modparams)
         totmod = np.nansum(mod, axis=1)
     else:
-        totmod = np.full_like(self.xtrim, np.nan)
+#         totmod = np.full_like(self.xtrim, np.nan)
+        totmod = np.full_like(self.x, np.nan)
 
     return totmod
 
