@@ -520,11 +520,13 @@ def create_modelcube(self, njobs=1, verbose=True):
 
     cube = self.cube
 # Commented out by TW on 27-jul-23 because ppv_vol is not defined
+#     cube = self.cube
 #     x = np.array(cube.world[:,0,0][0])
 #     if (self.ppv_vol[0] is not None) & (self.ppv_vol[1] is not None):
 #         trimids = np.where((x>self.ppv_vol[0])&(x<self.ppv_vol[1]))[0]
 # 
 #     _cube = cube[min(trimids):max(trimids)+1, :, :]
+    _cube = self.cube
     _modelcube = np.full_like(_cube, np.nan)
 
     if verbose:
